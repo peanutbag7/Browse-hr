@@ -39,17 +39,31 @@ function timeAgo($dateString)
 
 function replaceUrls($str)
 {
-    $str = preg_replace('/(https?:\/\/[^\s]+)/', '<a href="$1" target="_blank">$1</a>', $str);
+    $str = preg_replace(
+        "/(https?:\/\/[^\s]+)/",
+        '<a href="$1" target="_blank">$1</a>',
+        $str
+    );
 
-    $str = preg_replace('/@([^\s]+)/', '<a href="profile.php?username=$1" class="purple">@$1</a>', $str);
+    $str = preg_replace(
+        "/@([^\s]+)/",
+        '<a href="profile.php?username=$1" class="purple">@$1</a>',
+        $str
+    );
 
     return $str;
 }
 
-if (isset($_GET['username'])) {
-    $username = $_GET['username'];
+if (isset($_GET["username"])) {
+    $username = $_GET["username"];
 
-    $json = file_get_contents('https://webapi.highrise.game/users?&username=' . $username . '&sort_order=asc&limit=1', false, stream_context_create($arrContextOptions));
+    $json = file_get_contents(
+        "https://webapi.highrise.game/users?&username=" .
+            $username .
+            "&sort_order=asc&limit=1",
+        false,
+        stream_context_create($arrContextOptions)
+    );
 
     $data1 = json_decode($json, true);
 
@@ -58,38 +72,53 @@ if (isset($_GET['username'])) {
         exit();
     }
     $user_id = $data1["users"][0]["user_id"];
-} elseif (isset($_GET['id'])) {
-    $user_id = $_GET['id'];
+} elseif (isset($_GET["id"])) {
+    $user_id = $_GET["id"];
 } else {
     echo "No user specified";
     exit();
 }
 
-($json = file_get_contents('https://webapi.highrise.game/users/' . $user_id . '', false, stream_context_create($arrContextOptions))) or die('Error occured');
+($json = file_get_contents(
+    "https://webapi.highrise.game/users/" . $user_id . "",
+    false,
+    stream_context_create($arrContextOptions)
+)) or die("Error occured");
 
-($data2 = json_decode($json, true)) or die('Invalid user id');
+($data2 = json_decode($json, true)) or die("Invalid user id");
 
 $userdata = $data2["user"];
 
-if (isset($_GET['starts_after'])) {
-    $starts_after = "&starts_after=" . $_GET['starts_after'];
+if (isset($_GET["starts_after"])) {
+    $starts_after = "&starts_after=" . $_GET["starts_after"];
 } else {
     $starts_after = "";
 }
 
-if (isset($_GET['ends_before'])) {
-    $ends_before = "&ends_before=" . $_GET['ends_before'];
+if (isset($_GET["ends_before"])) {
+    $ends_before = "&ends_before=" . $_GET["ends_before"];
 } else {
     $ends_before = "";
 }
 
 $sort_order = "desc";
 
-if (isset($_GET['sort_order'])) {
-    $sort_order = $_GET['sort_order'];
+if (isset($_GET["sort_order"])) {
+    $sort_order = $_GET["sort_order"];
 }
 
-$json = file_get_contents('https://webapi.highrise.game/posts?limit=5' . $starts_after . $ends_before . '&sort_order=' . $sort_order . '&author_id=' . $user_id . '', false, stream_context_create($arrContextOptions));
+$json = file_get_contents(
+    "https://webapi.highrise.game/posts?limit=5" .
+        $starts_after .
+        $ends_before .
+        "&sort_order=" .
+        $sort_order .
+        "&author_id=" .
+        $user_id .
+        "",
+    false,
+    stream_context_create($arrContextOptions)
+);
 
 $data3 = json_decode($json, true);
 
@@ -116,28 +145,40 @@ $posts = $data3["posts"];
 			</div>
 		</nav>
 				<section class="jumbotron mb-0 text-light text-left" style="padding-top:96px;position:relative;margin-top:0px;">
-			<h2 id="user-name"><?php echo $userdata['username']; ?></h2>
-			<?php if (isset($userdata['crew']['name'])) { ?>
-			<h6><?php echo $userdata['crew']['name']; ?></h6>
+			<h2 id="user-name"><?php echo $userdata["username"]; ?></h2>
+			<?php if (isset($userdata["crew"]["name"])) { ?>
+			<h6><?php echo $userdata["crew"]["name"]; ?></h6>
 			<?php } ?>			
-			<p id="user-bio" class="lead"><?php echo $userdata['bio']; ?></p>
+			<p id="user-bio" class="lead"><?php echo $userdata["bio"]; ?></p>
 			<div class="container-fluid">
-			<?php if (isset($userdata['discord_id'])) { ?>
-			<h1><a href="https://discordapp.com/users/<?php echo $userdata['discord_id']; ?>" class="purple"><i class="bi-discord"></i></a></h1>
+			<?php if (isset($userdata["discord_id"])) { ?>
+			<h1><a href="https://discordapp.com/users/<?php echo $userdata[
+       "discord_id"
+   ]; ?>" class="purple"><i class="bi-discord"></i></a></h1>
 			<?php } ?>
 				<div class="row">
 					<div class="col-md-3">
-					<p><i class="bi-clock purple"></i> Joined on <strong><?php echo substr($userdata["joined_at"], 0, 10); ?></strong></p>
+					<p><i class="bi-clock purple"></i> Joined on <strong><?php echo substr(
+         $userdata["joined_at"],
+         0,
+         10
+     ); ?></strong></p>
 					</div>
 					<div class="col-md-3">
-					<p><i class="bi-person-fill purple"></i> <strong><?php echo $userdata["num_following"]; ?></strong> following</p>
+					<p><i class="bi-person-fill purple"></i> <strong><?php echo $userdata[
+         "num_following"
+     ]; ?></strong> following</p>
 					</div>
 							<div class="col-md-3">
-								<p><i class="bi-person-fill purple"></i> <strong><?php echo $userdata["num_followers"]; ?></strong> followers</p>
+								<p><i class="bi-person-fill purple"></i> <strong><?php echo $userdata[
+            "num_followers"
+        ]; ?></strong> followers</p>
 
 					</div>
 					<div class="col-md-3">
-								<p><i class="bi-person-fill purple"></i> <strong><?php echo $userdata["num_friends"]; ?></strong> friends</p>
+								<p><i class="bi-person-fill purple"></i> <strong><?php echo $userdata[
+            "num_friends"
+        ]; ?></strong> friends</p>
 
 					</div>
 			
@@ -162,31 +203,31 @@ $posts = $data3["posts"];
   </li>
 </ul>					
 </div>
-		<div class="col-3 py-3 text-right">
-		</div>
+<div class="col-3 py-3 text-right">
+</div>
 		
 </div>
 
 <div class="container-fluid">
 
-				<div class="stats">
+<div class="stats">
 
 	<div class="box-shadow rounded-card mb-4">	
 	<div class="card-body bg-dark text-light">
 	<h4 class="purple">Total posts</h4>
-<p><?php echo $totalposts; ?></p>
+	<p><?php echo $totalposts; ?></p>
 	</div>	
-		</div>
+	</div>
 		
 	<div class="box-shadow rounded-card mb-4">	
 	<div class="card-body bg-dark text-light">
 	<h4 class="purple">Most frequent words used</h4>
 	<p class="text-muted">(In the most recent 75 posts, ignoring common words like 'and')</p>
-<a href="javascript:void(0);" role="button" class="btn btn-secondary mb-3" 
+	<a href="javascript:void(0);" role="button" class="btn btn-secondary mb-3" 
 onclick="$( '#stats-1' ).html( 'Please wait..' );$( '#stats-1' ).load( 'statcalc.php?id=<?php echo $user_id; ?>&stat=1' );">Find out!</a>
 	<div id="stats-1"></div>
 	</div>	
-		</div>
+</div>
 		
 		
 	<div class="box-shadow rounded-card mb-4">	
@@ -222,7 +263,9 @@ onclick="$( '#stats-4' ).html( 'Please wait..' );$( '#stats-4' ).load( 'statcalc
 	<div class="box-shadow rounded-card mb-4">	
 	<div class="card-body bg-dark text-light">
 	<h4 class="purple">Most mentioned users</h4>
-	<p class="text-muted">(The users that <?php echo $userdata['username']; ?> have mentioned the most in the most recent 75 posts)</p>
+	<p class="text-muted">(The users that <?php echo $userdata[
+     "username"
+ ]; ?> have mentioned the most in the most recent 75 posts)</p>
 <a href="javascript:void(0);" role="button" class="btn btn-secondary mb-3" 
 onclick="$( '#stats-5' ).html( 'Please wait..' );$( '#stats-5' ).load( 'statcalc.php?id=<?php echo $user_id; ?>&stat=5' );">Find out!</a>
 	<div id="stats-5"></div>
