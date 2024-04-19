@@ -16,7 +16,6 @@ if (isset($_GET['stat']) && isset($_GET['id'])) {
 
         $data3 = json_decode($json, true);
 
-        // $totalposts=$data3["total"];
 
         $posts = $data3["posts"];
 
@@ -36,10 +35,10 @@ if (isset($_GET['stat']) && isset($_GET['id'])) {
 
             $sentence = str_replace("\n", "", $sentence);
             $sentence = str_replace("\t", "", $sentence);
-            $words = preg_split('/\s+/', $sentence); // Split sentence into words
+            $words = preg_split('/\s+/', $sentence); 
 
             foreach ($words as $word) {
-                $word = strtolower($word); // Convert word to lowercase
+                $word = strtolower($word); 
 
                 // Ignore pronouns and common words
                 if (strlen($word)>0 && !in_array($word, $pronouns) && !in_array($word, $commonWords)) {
@@ -143,10 +142,10 @@ if (isset($_GET['stat']) && isset($_GET['id'])) {
 
         $sentence = str_replace("\n", "", $sentence);
         $sentence = str_replace("\t", "", $sentence);
-        preg_match_all('/#\w+/', $sentence, $hashtags); // Extract hashtags from the sentence
+        preg_match_all('/#\w+/', $sentence, $hashtags); 
 
         foreach ($hashtags[0] as $hashtag) {
-            $hashtag = strtolower($hashtag); // Convert hashtag to lowercase
+            $hashtag = strtolower($hashtag); 
 
             
             if (strlen($hashtag) > 0) {
@@ -195,10 +194,10 @@ if (isset($_GET['stat']) && isset($_GET['id'])) {
 
         $sentence = str_replace("\n", "", $sentence);
         $sentence = str_replace("\t", "", $sentence);
-        preg_match_all('/\@\w+/', $sentence, $mentions); // Extract mentions from the sentence
+        preg_match_all('/\@\w+/', $sentence, $mentions);
 
         foreach ($mentions[0] as $mention) {
-            $mention = strtolower($mention); // Convert mention to lowercase
+            $mention = strtolower($mention);
 
             
             if (strlen($mention) > 0) {
